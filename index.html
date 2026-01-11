@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeFlix | Stream</title>
+    <style>
+        /* CSS - Netflix Aesthetic */
+        :root {
+            --netflix-red: #e50914;
+            --dark-bg: #141414;
+            --overlay-bg: rgba(0, 0, 0, 0.9);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 90vh;
+            background: linear-gradient(to top, var(--dark-bg), transparent 50%),
+                        linear-gradient(to right, rgba(0,0,0,0.8), transparent),
+                        url('https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+        }
+
+        .hero-content { max-width: 600px; }
+        .hero-title { font-size: 4rem; margin-bottom: 10px; color: var(--netflix-red); }
+        .hero-desc { font-size: 1.2rem; margin-bottom: 20px; line-height: 1.5; }
+
+        .play-btn {
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: opacity 0.2s;
+        }
+
+        .play-btn:hover { background-color: rgba(255,255,255,0.8); }
+
+        /* Video Player Overlay */
+        #videoContainer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: black;
+            z-index: 1000;
+        }
+
+        video { width: 100%; height: 100%; object-fit: contain; }
+
+        .close-player {
+            position: absolute;
+            top: 20px; left: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1001;
+            text-shadow: 2px 2px 5px black;
+        }
+
+        /* Skip & Next Buttons */
+        .player-controls-ui {
+            position: absolute;
+            bottom: 80px;
+            right: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1001;
+        }
+
+        .action-btn {
+            background: rgba(20, 20, 20, 0.8);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.5);
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: none; /* Hidden by default */
+        }
+
+        .action-btn:hover {
+            background: white;
+            color: black;
+            border-color: white;
+        }
+
+        .show { display: block !important; }
+
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">DEMON SLAYER</h1>
+            <p class="hero-desc">Tanjirou Kamado, a kindhearted boy who sells charcoal for a living, finds his family slaughtered by a demon. To make matters worse, his younger sister Nezuko, the sole survivor, has been transformed into a demon herself.</p>
+            <button class="play-btn" onclick="openPlayer()">▶ Play Now</button>
+        </div>
+    </header>
+
+    <div id="videoContainer">
+        <span class="close-player" onclick="closePlayer()">←</span>
+        
+        <video id="mainVideo">
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        </video>
+
+        <div class="player-controls-ui">
+            <button id="skipIntro" class="action-btn" onclick="skipTo(40)">Skip Intro</button>
+            <button id="nextEp" class="action-btn" onclick="nextEpisode()">Next Episode</button>
+            <button id="skipCredits" class="action-btn" onclick="nextEpisode()">Skip Credits</button>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('mainVideo');
+        const videoContainer = document.getElementById('videoContainer');
+        const skipIntroBtn = document.getElementById('skipIntro');
+        const nextEpBtn = document.getElementById('nextEp');
+        const skipCreditsBtn = document.getElementById('skipCredits');
+
+        function openPlayer() {
+            videoContainer.style.display = 'block';
+            video.play();
+            // Request Fullscreen (Optional)
+            if (videoContainer.requestFullscreen) videoContainer.requestFullscreen();
+        }
+
+        function closePlayer() {
+            video.pause();
+            videoContainer.style.display = 'none';
+            if (document.exitFullscreen) document.exitFullscreen();
+        }
+
+        function skipTo(time) {
+            video.currentTime = time;
+        }
+
+        function nextEpisode() {
+            alert("Loading Next Episode: S1 E2...");
+            // In a real app, you would update video.src here
+            closePlayer();
+        }
+
+        // Logic for Skip Buttons based on time
+        video.ontimeupdate = () => {
+            const currentTime = video.currentTime;
+            const duration = video.duration;
+
+            // 1. Skip Intro (Shows between 2 and 10 seconds)
+            if (currentTime > 2 && currentTime < 10) {
+                skipIntroBtn.classList.add('show');
+            } else {
+                skipIntroBtn.classList.remove('show');
+            }
+
+            // 2. Skip Credits & Next Episode (Shows when 10 seconds are left)
+            if (duration - currentTime < 10) {
+                nextEpBtn.classList.add('show');
+                skipCreditsBtn.classList.add('show');
+            } else {
+                nextEpBtn.classList.remove('show');
+                skipCreditsBtn.classList.remove('show');
+            }
+        };
+    </script>
+</body>
+</html>
