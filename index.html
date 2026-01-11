@@ -70,13 +70,26 @@
         
         /* --- Player Controls Bar --- */
         #player { position: fixed; inset: 0; z-index: 3000; background: #000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .video-container { width: 100%; max-width: 1100px; display: flex; flex-direction: column; align-items: center; padding: 0 10px; }
+        .video-container { width: 100%; max-width: 1100px; display: flex; flex-direction: column; align-items: center; padding: 0 10px; position: relative; }
         video { width: 100%; border-radius: 8px 8px 0 0; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid #333; max-height: 70vh; background: #000; }
         .player-controls-bar { width: 100%; background: #1a1a1a; padding: 15px; border-radius: 0 0 8px 8px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border: 1px solid #333; border-top: none; gap: 10px; }
         .control-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
         .control-btn { background: #2a2a2a; border: 1px solid #444; color: white; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.2s; font-family: 'Kanit', sans-serif; font-size: 0.85rem; }
         .control-btn:hover { background: var(--orange); border-color: var(--orange); }
         .skip-intro-btn { background: #fff; color: #000; font-weight: 900; display: none; }
+
+        /* --- Netflix Style Next Up Overlay --- */
+        #next-up-overlay {
+            position: absolute; bottom: 120px; right: 40px; background: rgba(0,0,0,0.85); padding: 20px;
+            border-radius: 8px; border: 1px solid #444; width: 280px; display: none; flex-direction: column; gap: 10px;
+            animation: slideInRight 0.5s ease; z-index: 3100;
+        }
+        .next-up-header { font-size: 12px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+        .next-up-title { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .next-up-timer { height: 4px; background: #333; width: 100%; position: relative; border-radius: 2px; overflow: hidden; }
+        .next-up-progress { height: 100%; background: var(--orange); width: 100%; transform-origin: left; transition: linear; }
+
+        @keyframes slideInRight { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         /* --- Mobile Tweaks --- */
         @media (max-width: 768px) {
@@ -88,6 +101,7 @@
             .hero-content p { display: none; }
             .player-controls-bar { justify-content: center; }
             .control-group { width: 100%; justify-content: center; }
+            #next-up-overlay { right: 20px; bottom: 180px; width: calc(100% - 40px); }
         }
 
         @keyframes cinematicLogo { 0% { opacity: 0; transform: scale(0.8); } 40% { opacity: 1; } 100% { opacity: 0; transform: scale(1.1); } }
@@ -111,30 +125,7 @@
                 <input type="password" class="data" placeholder="Password" required>
                 <i class="fa-solid fa-lock"></i>
             </div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:25px; font-size:14px;">
-                <label style="cursor:pointer;"><input type="checkbox" id="rememberMe"> Remember me</label>
-                <a onclick="showAuth('forgotForm')" style="cursor:pointer; opacity:0.7;">Forgot Password?</a>
-            </div>
             <button type="submit" class="btn-premium">Sign In</button>
-            <footer style="margin-top:25px; text-align:center; opacity:0.7; font-size:14px;">
-                Don't have an account? <a onclick="showAuth('registerForm')" style="color:#fff; cursor:pointer; font-weight:600;">Sign Up</a>
-            </footer>
-        </form>
-
-        <form id="registerForm" class="glass-form" onsubmit="handleLogin(event)">
-            <h2 style="margin-bottom: 20px;">Create Account</h2>
-            <div class="input-group"><input type="email" class="data" placeholder="Email" required><i class="fa-solid fa-envelope"></i></div>
-            <div class="input-group"><input type="text" class="data" placeholder="Username" required><i class="fa-solid fa-user"></i></div>
-            <div class="input-group"><input type="password" class="data" placeholder="Password" required><i class="fa-solid fa-lock"></i></div>
-            <button type="submit" class="btn-premium">Get Started</button>
-            <footer style="margin-top:20px; text-align:center;"><a onclick="showAuth('loginForm')" style="cursor:pointer; color:#fff;">Already a member? Sign In</a></footer>
-        </form>
-
-        <form id="forgotForm" class="glass-form">
-            <h2 style="margin-bottom: 20px;">Recovery</h2>
-            <div class="input-group"><input type="email" class="data" placeholder="Your Email" required><i class="fa-solid fa-envelope"></i></div>
-            <button type="submit" class="btn-premium">Send Link</button>
-            <footer style="margin-top:20px; text-align:center;"><a onclick="showAuth('loginForm')" style="cursor:pointer; color:#fff;">Go Back</a></footer>
         </form>
     </div>
 
@@ -143,13 +134,9 @@
             <h1 style="font-size:clamp(2rem, 8vw, 3.5rem); font-weight:900; margin-bottom:10px;">Who's watching?</h1>
             <div class="avatar-container">
                 <img class="avatar-circle" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Luffy" onclick="pickAvatar(this)">
-                <img class="avatar-circle" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Goku" onclick="pickAvatar(this)">
-                <img class="avatar-circle" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Naruto" onclick="pickAvatar(this)">
-                <img class="avatar-circle" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Anya" onclick="pickAvatar(this)">
             </div>
-            <input type="text" id="p-name" class="data" style="width:100%; max-width:300px; text-align:center; font-size:1.5rem; border-bottom:2px solid #333;" placeholder="Your Name">
-            <br>
-            <button id="profile-continue" class="btn-premium" style="width:100%; max-width:300px; margin-top:40px; display:none; background:var(--orange); color:#fff;" onclick="enterSite()">CONTINUE</button>
+            <input type="text" id="p-name" class="data" style="width:100%; max-width:300px; text-align:center; font-size:1.5rem;" placeholder="Your Name">
+            <button id="profile-continue" class="btn-premium" style="display:none;" onclick="enterSite()">CONTINUE</button>
         </div>
     </div>
 
@@ -157,20 +144,15 @@
         <aside class="sidebar">
             <div class="nav-group">
                 <div class="nav-item active"><i class="fa-solid fa-house"></i><span>Home</span></div>
-                <div class="nav-item"><i class="fa-solid fa-fire"></i><span>Trending</span></div>
                 <div id="sidebar-genres"></div>
             </div>
-            <div class="nav-item nav-logout" onclick="logout()">
-                <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
-            </div>
+            <div class="nav-item nav-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></div>
         </aside>
-
         <main class="main-view">
             <section class="hero">
                 <div class="hero-content">
                     <img id="user-avatar-mini" src="" style="width:60px; height:60px; border-radius:50%; border:2px solid var(--orange); margin-bottom:15px; object-fit: cover;">
                     <h1 id="welcome-text">HUNTER X HUNTER</h1>
-                    <p>Gon Freecss sets out on a journey to become a Hunter and find his father. Join the adventure.</p>
                     <button class="btn-premium" style="width:100%; max-width:240px;" onclick="openAnime('Hunter x Hunter (2011)')"><i class="fa-solid fa-play"></i> BROWSE EPISODES</button>
                 </div>
             </section>
@@ -181,7 +163,7 @@
     <div id="modal">
         <div class="modal-body">
             <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333;">
-                <h2 id="modal-title" style="font-size: 1.2rem;">Title</h2>
+                <h2 id="modal-title">Title</h2>
                 <i class="fa-solid fa-xmark" style="font-size: 1.5rem; cursor: pointer;" onclick="closeModal()"></i>
             </div>
             <div id="modal-episodes" style="flex:1; overflow-y:auto; padding: 20px;"></div>
@@ -191,6 +173,19 @@
     <div id="player">
         <div class="video-container">
             <video id="main-video" controls autoplay></video>
+            
+            <div id="next-up-overlay">
+                <div class="next-up-header">Next Episode</div>
+                <div class="next-up-title" id="next-ep-title">Episode Name</div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="control-btn" style="flex: 1; background: #fff; color: #000;" onclick="triggerNextNow()">PLAY NOW</button>
+                    <button class="control-btn" style="flex: 1;" onclick="cancelAutoPlay()">CANCEL</button>
+                </div>
+                <div class="next-up-timer">
+                    <div class="next-up-progress" id="timer-bar"></div>
+                </div>
+            </div>
+
             <div class="player-controls-bar">
                 <div class="control-group">
                     <button class="control-btn" onclick="changeEpisode(-1)"><i class="fa-solid fa-backward-step"></i> PREV</button>
@@ -199,90 +194,47 @@
                     <button class="control-btn" onclick="changeEpisode(1)">NEXT <i class="fa-solid fa-forward-step"></i></button>
                 </div>
                 <div class="control-group">
-                    <button id="skip-intro-btn" class="control-btn skip-intro-btn" onclick="seekVideo(85)">SKIP INTRO</button>
+                    <button id="skip-intro-btn" class="control-btn skip-intro-btn" onclick="skipToTime(118)">SKIP INTRO</button>
                     <button class="control-btn" style="background:transparent; border:none; opacity:0.5;" onclick="closePlayer()">EXIT</button>
                 </div>
             </div>
-            <h4 id="now-playing-title" style="margin-top: 15px; color: #888; letter-spacing: 1px; text-align: center; font-size: 0.8rem;"></h4>
+            <h4 id="now-playing-title" style="margin-top: 15px; color: #888; text-align: center; font-size: 0.8rem;"></h4>
         </div>
     </div>
 
     <script>
-        const library = {
-            "Trending Now": ["Hunter x Hunter (2011)", "Fullmetal Alchemist: B", "Attack on Titan"],
-            "Action": ["One Piece", "Demon Slayer", "Jujutsu Kaisen"],
-            "Thriller": ["Death Note", "Monster", "Steins;Gate"]
-        };
-
+        const library = { "Trending": ["Hunter x Hunter (2011)", "One Piece"] };
         let selectedAvatarUrl = "";
         let currentPlayback = { index: 0, episodes: [] };
+        let autoPlayCancelled = false;
 
         window.onload = () => {
-            setTimeout(() => {
-                document.getElementById('intro-screen').classList.add('hidden');
-                checkSession();
-            }, 3500);
-
-            const savedUser = localStorage.getItem('rememberedUser');
-            if (savedUser) {
-                document.getElementById('loginUser').value = savedUser;
-                document.getElementById('rememberMe').checked = true;
-            }
-
-            renderSidebar();
-            renderHome();
+            setTimeout(() => { document.getElementById('intro-screen').classList.add('hidden'); checkSession(); }, 3500);
+            renderSidebar(); renderHome();
         };
 
         function checkSession() {
-            if (localStorage.getItem('af_logged_in')) {
-                if (localStorage.getItem('af_user_profile')) enterSite();
-                else document.getElementById('profile-setup').classList.remove('hidden');
-            } else {
-                document.getElementById('auth-screen').classList.remove('hidden');
-            }
-        }
-
-        function showAuth(id) {
-            document.querySelectorAll('.glass-form').forEach(f => f.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            if (localStorage.getItem('af_logged_in')) enterSite();
+            else document.getElementById('auth-screen').classList.remove('hidden');
         }
 
         function handleLogin(e) {
-            e.preventDefault();
-            const user = document.getElementById('loginUser').value;
-            if (document.getElementById('rememberMe').checked) localStorage.setItem('rememberedUser', user);
-            else localStorage.removeItem('rememberedUser');
-
-            localStorage.setItem('af_logged_in', 'true');
+            e.preventDefault(); localStorage.setItem('af_logged_in', 'true');
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('profile-setup').classList.remove('hidden');
         }
 
         function pickAvatar(el) {
             document.querySelectorAll('.avatar-circle').forEach(img => img.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedAvatarUrl = el.src;
+            el.classList.add('selected'); selectedAvatarUrl = el.src;
             document.getElementById('profile-continue').style.display = 'inline-block';
         }
 
         function enterSite() {
-            let profile;
-            if (!localStorage.getItem('af_user_profile')) {
-                const name = document.getElementById('p-name').value || "User";
-                profile = { name, avatar: selectedAvatarUrl };
-                localStorage.setItem('af_user_profile', JSON.stringify(profile));
-            } else {
-                profile = JSON.parse(localStorage.getItem('af_user_profile'));
-            }
-
             document.getElementById('profile-setup').classList.add('hidden');
             document.getElementById('auth-screen').classList.add('hidden');
-            const app = document.getElementById('main-app');
-            app.style.visibility = 'visible';
-            app.style.opacity = '1';
-
-            document.getElementById('user-avatar-mini').src = profile.avatar;
-            document.getElementById('welcome-text').innerText = "HELLO, " + profile.name.toUpperCase();
+            document.getElementById('main-app').style.visibility = 'visible';
+            document.getElementById('main-app').style.opacity = '1';
         }
 
         function renderSidebar() {
@@ -293,7 +245,7 @@
         function renderHome() {
             const container = document.getElementById('home-rows');
             for (let g in library) {
-                container.innerHTML += `<div style="margin-top:40px;"><h3>${g}</h3><div class="card-list">${library[g].map(a => `<div class="card" onclick="openAnime('${a}')"><div class="thumb-gen">${a}</div></div>`).join('')}</div></div>`;
+                container.innerHTML += `<h3>${g}</h3><div class="card-list">${library[g].map(a => `<div class="card" onclick="openAnime('${a}')"><div class="thumb-gen">${a}</div></div>`).join('')}</div>`;
             }
         }
 
@@ -302,68 +254,82 @@
             const container = document.getElementById('modal-episodes');
             document.getElementById('modal-title').innerText = title;
             modal.style.display = 'flex';
-            container.innerHTML = '';
-
-            const episodes = title.includes("Hunter x Hunter") ? [
-                { title: "Arrival x And x Journey", src: "Hunter x Hunter - 1.mp4" },
-                { title: "Test x Of x Tests", src: "Hunter x Hunter - 2.mp4" },
-                { title: "Rivals x For x Survival", src: "Hunter x Hunter - 3.mp4" }
-            ] : [];
-
-            if (episodes.length > 0) {
-                episodes.forEach((ep, i) => {
-                    container.innerHTML += `
-                        <div style="display:flex; align-items:center; gap:20px; padding:15px; border-bottom:1px solid #333; cursor:pointer;" 
-                             onclick='playVideo(${i}, ${JSON.stringify(episodes)})'>
-                            <div style="font-size:1.2rem; color:var(--orange); font-weight:bold;">${i+1}</div>
-                            <div style="flex:1;"><h4>${ep.title}</h4><p style="font-size:12px; color:#888;">Premium Stream</p></div>
-                            <i class="fa-solid fa-play"></i>
-                        </div>`;
-                });
-            } else {
-                container.innerHTML = `<p style="text-align:center; padding:50px; color:#555;">Episodes for this series are being updated...</p>`;
-            }
+            const episodes = [
+                { title: "Arrival x And x Journey", src: "ep1.mp4" },
+                { title: "Test x Of x Tests", src: "ep2.mp4" },
+                { title: "Rivals x For x Survival", src: "ep3.mp4" }
+            ];
+            container.innerHTML = episodes.map((ep, i) => `
+                <div style="display:flex; padding:15px; border-bottom:1px solid #333; cursor:pointer;" onclick='playVideo(${i}, ${JSON.stringify(episodes)})'>
+                    <div style="color:var(--orange); font-weight:bold; width:30px;">${i+1}</div>
+                    <div style="flex:1;">${ep.title}</div><i class="fa-solid fa-play"></i>
+                </div>`).join('');
         }
 
         function playVideo(index, episodes) {
-            const ep = episodes[index];
             currentPlayback = { index, episodes };
+            autoPlayCancelled = false;
+            document.getElementById('next-up-overlay').style.display = 'none';
+            
             const player = document.getElementById('player');
             const video = document.getElementById('main-video');
-            const titleDisplay = document.getElementById('now-playing-title');
-            
             player.style.display = 'flex';
-            video.src = ep.src;
-            titleDisplay.innerText = "NOW PLAYING: " + ep.title.toUpperCase();
+            video.src = episodes[index].src;
+            document.getElementById('now-playing-title').innerText = "NOW PLAYING: " + episodes[index].title;
             video.play();
 
             video.ontimeupdate = () => {
                 const skipBtn = document.getElementById('skip-intro-btn');
-                if (video.currentTime > 5 && video.currentTime < 90) skipBtn.style.display = 'flex';
+                if (video.currentTime > 5 && video.currentTime < 118) skipBtn.style.display = 'flex';
                 else skipBtn.style.display = 'none';
+
+                // Next Episode logic (trigger 10 seconds before end)
+                let timeLeft = video.duration - video.currentTime;
+                if (timeLeft <= 10 && timeLeft > 0 && index < episodes.length - 1 && !autoPlayCancelled) {
+                    showNextUpOverlay(episodes[index + 1].title);
+                }
+            };
+
+            video.onended = () => {
+                if (!autoPlayCancelled && index < episodes.length - 1) changeEpisode(1);
             };
         }
 
+        function showNextUpOverlay(title) {
+            const overlay = document.getElementById('next-up-overlay');
+            if (overlay.style.display === 'flex') return;
+            
+            overlay.style.display = 'flex';
+            document.getElementById('next-ep-title').innerText = title;
+            const bar = document.getElementById('timer-bar');
+            bar.style.transition = 'none';
+            bar.style.width = '100%';
+            setTimeout(() => {
+                bar.style.transition = 'width 10s linear';
+                bar.style.width = '0%';
+            }, 50);
+        }
+
+        function cancelAutoPlay() {
+            autoPlayCancelled = true;
+            document.getElementById('next-up-overlay').style.display = 'none';
+        }
+
+        function triggerNextNow() {
+            changeEpisode(1);
+        }
+
+        function skipToTime(sec) { document.getElementById('main-video').currentTime = sec; }
         function seekVideo(sec) { document.getElementById('main-video').currentTime += sec; }
         function changeEpisode(dir) {
             const nextIdx = currentPlayback.index + dir;
             if (nextIdx >= 0 && nextIdx < currentPlayback.episodes.length) playVideo(nextIdx, currentPlayback.episodes);
-            else { closePlayer(); if(dir === 1) alert("End of Season reached."); }
+            else closePlayer();
         }
 
-        function closePlayer() {
-            const video = document.getElementById('main-video');
-            video.pause();
-            document.getElementById('player').style.display = 'none';
-        }
-
+        function closePlayer() { document.getElementById('main-video').pause(); document.getElementById('player').style.display = 'none'; }
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
-        
-        function logout() {
-            localStorage.removeItem('af_logged_in');
-            localStorage.removeItem('af_user_profile');
-            location.reload();
-        }
+        function logout() { localStorage.clear(); location.reload(); }
     </script>
 </body>
 </html>
