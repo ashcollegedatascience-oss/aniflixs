@@ -18,15 +18,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg); color: white; overflow: hidden; height: 100vh; font-family: 'Poppins', sans-serif; }
 
-        /* --- Screens --- */
         .screen { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; transition: 0.8s ease; background: var(--bg); padding: 20px; }
         .hidden { opacity: 0; pointer-events: none; visibility: hidden; display: none !important; }
 
-        /* --- Intro --- */
         #intro-screen { background: #000; z-index: 2000; }
         .logo-anim { font-size: clamp(3rem, 12vw, 6rem); font-family: 'Kanit'; font-weight: 900; letter-spacing: 10px; text-shadow: 0 0 50px var(--orange); animation: cinematicLogo 5s ease-in-out forwards; text-align: center; }
 
-        /* --- Auth Portal --- */
         #auth-screen { background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('background.jpg') center/cover fixed; z-index: 1500; }
         .glass-form { width: 100%; max-width: 420px; padding: 40px 30px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px); display: none; flex-direction: column; animation: slideUp 0.6s ease; }
         .glass-form.active { display: flex; }
@@ -34,21 +31,12 @@
         .btn-premium { width: 100%; height: 50px; border: none; border-radius: 12px; background: #fff; color: #111; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .btn-premium:hover { background: var(--orange); color: #fff; transform: translateY(-3px); }
 
-        /* --- Profile Selection (24 Characters) --- */
         #profile-setup { z-index: 1200; background: #000; flex-direction: column; overflow-y: auto; }
-        .avatar-grid { 
-            display: grid; 
-            grid-template-columns: repeat(6, 1fr); 
-            gap: 15px; 
-            max-width: 900px; 
-            margin: 30px 0;
-            padding: 20px;
-        }
+        .avatar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; max-width: 900px; margin: 30px 0; padding: 20px; }
         .avatar-item { width: 100%; aspect-ratio: 1; border-radius: 8px; cursor: pointer; border: 3px solid transparent; transition: 0.3s; object-fit: cover; opacity: 0.6; }
         .avatar-item:hover { opacity: 1; transform: scale(1.1); }
         .avatar-item.selected { opacity: 1; border-color: var(--orange); box-shadow: 0 0 20px var(--orange); }
 
-        /* --- Main Dashboard --- */
         .app-container { display: grid; grid-template-columns: var(--sidebar-collapsed) 1fr; height: 100vh; visibility: hidden; opacity: 0; transition: 0.5s; }
         .sidebar { background: #000; border-right: 1px solid #222; transition: var(--transition); z-index: 100; overflow: hidden; }
         .sidebar:hover { width: var(--sidebar-w); }
@@ -61,20 +49,16 @@
         .hero { height: 75vh; background: linear-gradient(to top, #141414, transparent), url('wallpaper.jpg') center/cover; display: flex; align-items: center; padding: 0 5%; }
         .hero-content h1 { font-family: 'Kanit'; font-size: 4.5rem; font-weight: 900; line-height: 1; }
 
-        /* --- Player --- */
         #player { position: fixed; inset: 0; z-index: 3000; background: #000; display: none; align-items: center; justify-content: center; }
         .video-container { width: 100%; max-width: 1000px; position: relative; }
         video { width: 100%; box-shadow: 0 0 50px rgba(0,0,0,1); }
-        .skip-intro-btn { position: absolute; bottom: 80px; right: 20px; background: #fff; color: #000; padding: 10px 20px; font-weight: bold; cursor: pointer; display: none; border: none; z-index: 3100; }
 
         @keyframes cinematicLogo { 0% { opacity: 0; transform: scale(0.8); } 40% { opacity: 1; } 100% { opacity: 0; transform: scale(1.1); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-
     <div id="intro-screen" class="screen"><div class="logo-anim">AnimeFlex</div></div>
-
     <div id="auth-screen" class="screen hidden">
         <form class="glass-form active" onsubmit="event.preventDefault(); showProfiles();">
             <h2 style="margin-bottom: 20px; font-family: 'Kanit';">Member Login</h2>
@@ -83,110 +67,64 @@
             <button class="btn-premium">ENTER PORTAL</button>
         </form>
     </div>
-
     <div id="profile-setup" class="screen hidden">
         <h1 style="font-family:'Kanit'; font-weight:900;">Who's watching?</h1>
         <div class="avatar-grid" id="avatar-grid"></div>
         <button id="profile-btn" class="btn-premium" style="width:200px; display:none;" onclick="enterSite()">CONTINUE</button>
     </div>
-
     <div class="app-container" id="main-app">
         <aside class="sidebar">
-            <div style="padding: 20px; text-align: center;">
-                <img id="user-avatar-mini" src="" style="width:50px; height:50px; border-radius:50%; border: 2px solid var(--orange); object-fit: cover;">
-            </div>
+            <div style="padding: 20px; text-align: center;"><img id="user-avatar-mini" src="" style="width:50px; height:50px; border-radius:50%; border: 2px solid var(--orange); object-fit: cover;"></div>
             <div class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></div>
-            <div class="nav-item"><i class="fa-solid fa-compass"></i><span>Explore</span></div>
             <div class="nav-item" onclick="location.reload()" style="margin-top:auto;"><i class="fa-solid fa-power-off"></i><span>Logout</span></div>
         </aside>
         <main class="main-view">
             <section class="hero">
                 <div class="hero-content">
                     <h1>HUNTER X HUNTER</h1>
-                    <p style="max-width: 500px; margin: 20px 0; color: #ccc;">The journey of Gon Freecss as he strives to become a legendary Hunter.</p>
-                    <button class="btn-premium" style="width: 200px; background: var(--orange); color: white;" onclick="playEp(0)">WATCH NOW</button>
+                    <p style="max-width: 500px; margin: 20px 0; color: #ccc;">The journey of Gon Freecss.</p>
+                    <button class="btn-premium" style="width: 200px; background: var(--orange); color: white;" onclick="playEp(0)">WATCH EP 1</button>
                 </div>
             </section>
         </main>
     </div>
-
     <div id="player">
         <div class="video-container">
             <video id="main-video" controls></video>
-            <button id="skip-intro-btn" class="skip-intro-btn" onclick="skipIntro()">SKIP INTRO</button>
-            <button class="btn-premium" style="position:absolute; top:-50px; right:0; width:100px; height:40px;" onclick="closePlayer()">CLOSE</button>
+            <button class="btn-premium" style="position:absolute; top:-50px; right:0; width:100px;" onclick="closePlayer()">CLOSE</button>
         </div>
     </div>
-
     <script>
-        // Best 24 Anime Characters
-        const avatars = [
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Luffy", "https://api.dicebear.com/7.x/avataaars/svg?seed=Goku",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Naruto", "https://api.dicebear.com/7.x/avataaars/svg?seed=Zoro",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Gon", "https://api.dicebear.com/7.x/avataaars/svg?seed=Killua",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Eren", "https://api.dicebear.com/7.x/avataaars/svg?seed=Mikasa",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Gojo", "https://api.dicebear.com/7.x/avataaars/svg?seed=Itadori",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Saitama", "https://api.dicebear.com/7.x/avataaars/svg?seed=Deku",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Tanjiro", "https://api.dicebear.com/7.x/avataaars/svg?seed=Nezuko",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Ichigo", "https://api.dicebear.com/7.x/avataaars/svg?seed=Edward",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Light", "https://api.dicebear.com/7.x/avataaars/svg?seed=L",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Levi", "https://api.dicebear.com/7.x/avataaars/svg?seed=Sasuke",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Kirito", "https://api.dicebear.com/7.x/avataaars/svg?seed=Natsu",
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=Asta", "https://api.dicebear.com/7.x/avataaars/svg?seed=Rimuru"
-        ];
-
-        let selectedAvatar = "";
         const episodes = ["ep1.mp4", "ep2.mp4", "ep3.mp4"];
+        const avatars = Array.from({length: 24}, (_, i) => `https://api.dicebear.com/7.x/avataaars/svg?seed=Anime${i}`);
+        let selectedAvatar = "";
 
         window.onload = () => {
             const grid = document.getElementById('avatar-grid');
             avatars.forEach(url => {
                 const img = document.createElement('img');
-                img.src = url;
-                img.className = 'avatar-item';
+                img.src = url; img.className = 'avatar-item';
                 img.onclick = () => {
                     document.querySelectorAll('.avatar-item').forEach(i => i.classList.remove('selected'));
-                    img.classList.add('selected');
-                    selectedAvatar = url;
+                    img.classList.add('selected'); selectedAvatar = url;
                     document.getElementById('profile-btn').style.display = 'block';
                 };
                 grid.appendChild(img);
             });
-
-            setTimeout(() => {
-                document.getElementById('intro-screen').classList.add('hidden');
-                document.getElementById('auth-screen').classList.remove('hidden');
-            }, 5000);
+            setTimeout(() => { document.getElementById('intro-screen').classList.add('hidden'); document.getElementById('auth-screen').classList.remove('hidden'); }, 3000);
         };
 
-        function showProfiles() {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('profile-setup').classList.remove('hidden');
-        }
-
-        function enterSite() {
+        function showProfiles() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('profile-setup').classList.remove('hidden'); }
+        function enterSite() { 
             document.getElementById('user-avatar-mini').src = selectedAvatar;
             document.getElementById('profile-setup').classList.add('hidden');
-            const app = document.getElementById('main-app');
-            app.style.visibility = 'visible';
-            app.style.opacity = '1';
+            document.getElementById('main-app').style.visibility = 'visible'; document.getElementById('main-app').style.opacity = '1'; 
         }
-
         function playEp(index) {
             const player = document.getElementById('player');
             const video = document.getElementById('main-video');
-            player.style.display = 'flex';
-            video.src = episodes[index];
-            video.play();
-            
-            video.ontimeupdate = () => {
-                const skipBtn = document.getElementById('skip-intro-btn');
-                if (video.currentTime > 5 && video.currentTime < 90) skipBtn.style.display = 'block';
-                else skipBtn.style.display = 'none';
-            };
+            player.style.display = 'flex'; video.src = episodes[index]; video.play();
         }
-
-        function skipIntro() { document.getElementById('main-video').currentTime = 90; }
         function closePlayer() { document.getElementById('main-video').pause(); document.getElementById('player').style.display = 'none'; }
     </script>
 </body>
