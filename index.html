@@ -2,315 +2,401 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeFlix | Stream</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StreamZ | The Ultimate Anime Experience</title>
+    
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Bebas+Neue&display=swap" rel="stylesheet" />
+    
     <style>
         :root {
-            --netflix-red: #e50914;
-            --dark-bg: #141414;
-            --sidebar-width: 240px;
-            --collapsed-width: 70px;
+            --accent: #e50914;
+            --accent-glow: rgba(229, 9, 20, 0.5);
+            --bg: #050505;
+            --surface: #121212;
+            --surface-light: #1f1f1f;
+            --text: #ffffff;
+            --text-dim: #a3a3a3;
+            --dd-brand: #FF3008;
         }
 
-        body, html {
-            margin: 0; padding: 0;
-            background-color: var(--dark-bg);
-            color: white;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        /* --- CORE STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- SIDEBAR --- */
-        .sidebar {
-            position: fixed; left: 0; top: 0; height: 100%;
-            width: var(--collapsed-width);
-            background: #000;
-            transition: 0.3s ease;
-            z-index: 2000;
-            border-right: 1px solid #222;
-        }
-        .sidebar:hover { width: var(--sidebar-width); }
-
-        .nav-item {
-            padding: 20px 24px;
-            display: flex; align-items: center;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .nav-item:hover { background: #1a1a1a; }
-        .nav-text { opacity: 0; margin-left: 20px; transition: 0.2s; font-weight: bold; white-space: nowrap; }
-        .sidebar:hover .nav-text { opacity: 1; }
-
-        .genre-list { display: none; background: #080808; flex-direction: column; padding-left: 20px; }
-        .genre-list.active { display: flex; }
-        .genre-item { padding: 10px; cursor: pointer; color: #aaa; }
-        .genre-item:hover { color: white; }
-
-        /* --- CONTENT --- */
-        .main-content { margin-left: var(--collapsed-width); }
-
-        .top-nav {
-            position: fixed; top: 0; right: 0;
-            width: calc(100% - var(--collapsed-width));
-            padding: 20px 40px;
-            display: flex; justify-content: space-between;
+        /* --- NAVIGATION --- */
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: 80px; 
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 4%; z-index: 5000;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            z-index: 1000;
+            transition: 0.4s;
         }
-        .logo { color: var(--netflix-red); font-weight: 900; font-size: 1.8rem; cursor: pointer; letter-spacing: 1px; }
+        .navbar.scrolled { background: var(--bg); border-bottom: 1px solid #222; }
+        .logo { font-family: 'Bebas Neue'; font-size: 2.8rem; color: var(--accent); letter-spacing: 2px; cursor: pointer; }
 
-        /* --- SLIDER --- */
-        .slider-container {
-            width: 100%;
-            height: 550px;
-            overflow: hidden;
-            position: relative;
-        }
-        .slider-wrapper {
-            display: flex;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            height: 100%;
-        }
-        .slide {
-            min-width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center 20%; /* Adjusted for the characters' faces */
-            display: flex;
-            align-items: flex-end;
-            padding: 80px;
-            box-sizing: border-box;
-            cursor: pointer;
-            position: relative;
-        }
-        .slide-overlay {
-            background: linear-gradient(to top, var(--dark-bg) 10%, transparent 80%);
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
-        }
-        .slide-content { position: relative; z-index: 2; max-width: 600px; }
-
-        /* --- PAGE SECTIONS --- */
-        .page-section { display: none; min-height: 100vh; animation: fadeIn 0.4s; }
-        .active-section { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* --- HOME --- */
-        .browse-container { padding: 40px; }
-        .anime-grid { display: flex; gap: 20px; flex-wrap: wrap; }
-        .anime-card { 
-            width: 200px; aspect-ratio: 2/3; background: #222; 
-            border-radius: 4px; cursor: pointer; transition: 0.3s;
-            overflow: hidden;
-        }
-        .anime-card:hover { transform: scale(1.08); z-index: 10; }
-        .anime-card img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* --- DETAIL SECTION HERO --- */
+        /* --- HERO & HOMEPAGE --- */
         .hero {
-            height: 85vh;
-            background-color: #222; 
-            background-image: 
-                linear-gradient(to top, var(--dark-bg) 5%, transparent 50%),
-                linear-gradient(to right, rgba(0,0,0,0.8) 20%, transparent 80%),
-                url('https://images.alphacoders.com/116/1163408.jpg'); 
-            background-size: cover; 
-            background-position: center 20%;
-            display: flex; align-items: center; padding: 0 60px;
+            height: 85vh; width: 100%; display: flex; align-items: center; padding: 0 6%;
+            background: linear-gradient(to right, var(--bg) 20%, transparent 100%),
+                        url('https://images.alphacoders.com/116/1163408.jpg') center 10%/cover;
         }
-        .hero-title { font-size: 5rem; margin: 0; font-weight: bold; text-shadow: 4px 4px 10px rgba(0,0,0,0.8); }
+        .hero-content { max-width: 650px; animation: fadeInUp 1s ease; }
+        .hero-content h1 { font-family: 'Bebas Neue'; font-size: 7rem; line-height: 0.9; margin-bottom: 20px; }
+        .hero-content p { color: var(--text-dim); font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; }
 
-        /* --- PLAYER --- */
-        #videoOverlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: black; z-index: 3000;
+        .content-row { padding: 40px 6%; }
+        .row-header { font-family: 'Bebas Neue'; font-size: 2rem; margin-bottom: 20px; color: var(--text-dim); }
+        .show-card {
+            width: 320px; height: 180px; background: var(--surface); border-radius: 6px;
+            overflow: hidden; cursor: pointer; position: relative;
+            transition: 0.4s cubic-bezier(0.2, 0, 0.2, 1); border: 2px solid transparent;
         }
-        video { width: 100%; height: 100%; }
-        .close-vid { position: absolute; top: 30px; left: 30px; font-size: 2.5rem; cursor: pointer; z-index: 3001; text-shadow: 0 0 10px black; }
+        .show-card:hover { transform: scale(1.05); border-color: #fff; z-index: 10; }
+        .show-card img { width: 100%; height: 100%; object-fit: cover; }
 
-        .controls-wrapper {
-            position: absolute; bottom: 0; width: 100%; height: 150px;
-            background: linear-gradient(to top, black, transparent);
-            opacity: 0; transition: 0.3s; padding: 20px 60px; box-sizing: border-box;
-            display: flex; flex-direction: column; justify-content: flex-end;
+        /* --- NETFLIX-STYLE EPISODE MODAL --- */
+        .modal-fullscreen {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 6000; overflow-y: auto; backdrop-filter: blur(10px);
         }
-        #videoOverlay:hover .controls-wrapper { opacity: 1; }
-
-        .progress-bar { width: 100%; height: 5px; background: #444; margin-bottom: 25px; cursor: pointer; position: relative; }
-        .progress-fill { height: 100%; background: var(--netflix-red); width: 0%; }
+        .modal-container { width: 90%; max-width: 1100px; margin: 50px auto; background: var(--surface); border-radius: 12px; overflow: hidden; position: relative; }
+        .modal-banner { 
+            height: 450px; padding: 60px; display: flex; align-items: flex-end;
+            background: linear-gradient(to top, var(--surface), transparent),
+                        url('https://images.alphacoders.com/116/1163408.jpg') center/cover;
+        }
+        .ep-list { padding: 40px; display: flex; flex-direction: column; gap: 15px; }
+        .ep-row { 
+            display: grid; grid-template-columns: 60px 200px 1fr; gap: 20px; 
+            padding: 20px; border-radius: 8px; cursor: pointer; border-bottom: 1px solid #222;
+            transition: 0.2s;
+        }
+        .ep-row:hover { background: var(--surface-light); }
+        .ep-num { font-family: 'Bebas Neue'; font-size: 2.5rem; color: #444; align-self: center; }
+        .ep-thumb { width: 100%; height: 110px; background: #000; border-radius: 4px; overflow: hidden; }
+        .ep-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
         
-        .btn-action {
-            background: white; border: none; color: black;
-            padding: 12px 28px; cursor: pointer; font-weight: bold;
-            border-radius: 4px; font-size: 1.1rem; transition: 0.2s;
-        }
-        .btn-action:hover { background: rgba(255,255,255,0.8); }
+        /* --- THEATER SYSTEM --- */
+        #theater { display: none; position: fixed; inset: 0; background: #000; z-index: 10000; }
+        .theater-party { display: grid; grid-template-columns: 1fr 380px; height: 100vh; }
+        .theater-solo { display: flex; align-items: center; justify-content: center; height: 100vh; }
+        
+        .video-wrapper { position: relative; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; }
+        video { flex: 1; width: 100%; }
 
-        .skip-btn {
-            background: rgba(255,255,255,0.2); border: 1px solid white; color: white;
-            padding: 10px 20px; cursor: pointer; display: none; font-weight: bold;
+        .chat-sidebar { background: var(--surface); border-left: 1px solid #222; display: flex; flex-direction: column; }
+        .chat-header { padding: 25px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; }
+        .chat-msgs { flex: 1; overflow-y: auto; padding: 20px; font-size: 0.9rem; color: #ccc; }
+        .msg-line { margin-bottom: 15px; }
+        .msg-line b { color: var(--accent); display: block; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 2px; }
+
+        /* --- SQUAD CONTROLS --- */
+        .sidebar-tabs { display: flex; background: #000; border-bottom: 1px solid #222; }
+        .tab-btn { flex: 1; padding: 15px; font-size: 0.7rem; font-weight: 900; color: #555; cursor: pointer; text-align: center; }
+        .tab-btn.active { color: var(--accent); background: var(--surface); }
+
+        .squad-panel { display: none; padding: 20px; flex: 1; overflow-y: auto; }
+        .squad-panel.active { display: block; }
+        .sync-item { 
+            display: flex; gap: 10px; align-items: center; padding: 10px; 
+            background: #1a1a1a; margin-bottom: 8px; border-radius: 6px; cursor: pointer;
+            font-size: 0.8rem; border: 1px solid transparent; transition: 0.2s;
         }
-        .skip-btn.show { display: inline-block; }
+        .sync-item:hover { border-color: var(--accent); background: #222; }
+        .sync-item b { color: var(--accent); font-family: 'Bebas Neue'; font-size: 1.2rem; }
+
+        .presence-bar { background: #080808; padding: 10px 20px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #111; }
+        .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--accent); border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; color: white; }
+
+        /* --- DOORDASH & PARTY POPUPS --- */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 15000; align-items: center; justify-content: center; }
+        .card-popup { background: var(--surface); width: 420px; padding: 40px; border-radius: 20px; border: 1px solid #333; text-align: center; }
+        .dd-white { background: #fff; color: #000; }
+        .dd-header { background: var(--dd-brand); color: #fff; padding: 30px; margin: -40px -40px 30px -40px; }
+        .dd-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; font-weight: 600; }
+        .dd-item:hover { background: #fff8f8; }
+
+        /* --- UI COMPONENTS --- */
+        .btn { padding: 14px 28px; border: none; border-radius: 4px; cursor: pointer; font-weight: 900; text-transform: uppercase; transition: 0.3s; }
+        .btn-accent { background: var(--accent); color: #fff; }
+        .btn-accent:hover { background: #b20710; box-shadow: 0 0 20px var(--accent-glow); }
+        .input-dark { width: 100%; padding: 15px; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; margin: 15px 0; text-align: center; font-weight: 900; font-size: 1.2rem; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="nav-item" onclick="showSection('homeSection')">
-            <span>🏠</span> <span class="nav-text">Home</span>
+    <nav class="navbar" id="mainNav">
+        <div class="logo" onclick="location.reload()">STREAMZ</div>
+        <div style="display:flex; gap:15px;">
+            <button class="btn" style="background:none; color:#fff; font-size:1.2rem;" onclick="toggleUI('ddPopup')"><i class="fas fa-shopping-bag"></i></button>
+            <button class="btn btn-accent" onclick="toggleUI('partyPopup')">JOIN PARTY</button>
         </div>
-        <div class="nav-item" onclick="toggleGenres()">
-            <span>🎭</span> <span class="nav-text">Genres ▾</span>
-        </div>
-        <div id="genreSubmenu" class="genre-list">
-            <div class="genre-item">Action</div>
-            <div class="genre-item">Shonen</div>
-            <div class="genre-item">Seinen</div>
-        </div>
-    </div>
+    </nav>
 
-    <div class="main-content">
-        <nav class="top-nav">
-            <div class="logo" onclick="showSection('homeSection')">ANIMEFLIX</div>
-        </nav>
-
-        <section id="homeSection" class="page-section active-section">
-            <div class="slider-container">
-                <div class="slider-wrapper" id="sliderWrapper">
-                    <div class="slide" style="background-image: url('https://images.alphacoders.com/116/1163408.jpg');" onclick="showSection('detailSection')">
-                        <div class="slide-overlay"></div>
-                        <div class="slide-content">
-                            <h1 style="font-size: 3.5rem; margin: 0;">HUNTER X HUNTER</h1>
-                            <p style="font-size: 1.2rem;">Experience Gon's journey to become a legendary Hunter.</p>
-                        </div>
-                    </div>
-                    <div class="slide" style="background-image: url('https://images3.alphacoders.com/165/165203.jpg');">
-                        <div class="slide-overlay"></div>
-                        <div class="slide-content">
-                            <h1 style="font-size: 3.5rem; margin: 0;">ONE PIECE</h1>
-                            <p style="font-size: 1.2rem;">Luffy and the crew head towards the Grand Line.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="browse-container">
-                <h2>Continue Watching</h2>
-                <div class="anime-grid">
-                    <div class="anime-card" onclick="showSection('detailSection')">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjNmZjkzMzktYjMzYy00MzRmLTgzM2MtYmU1YWExYjA3OTkwXkEyXkFqcGdeQXVyMjc2Nzg5OTQ@._V1_.jpg" alt="Hunter x Hunter">
-                    </div>
-                    <div class="anime-card">
-                        <img src="https://m.media-amazon.com/images/M/MV5BODcwNWE3OTItMDc3MS00NDFjLWE1OTAtNDU3NjgxODMxY2UyXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_.jpg" alt="One Piece">
-                    </div>
-                </div>
+    <div id="homePage">
+        <section class="hero">
+            <div class="hero-content">
+                <p style="color:var(--accent); font-weight:900; letter-spacing:4px; margin-bottom:10px;">TOP RATED ANIME</p>
+                <h1>HUNTER X HUNTER</h1>
+                <p>The journey of a young boy named Gon Freecss, who discovers that his father, whom he was told was dead, is actually alive and a world-renowned Hunter.</p>
+                <button class="btn btn-accent" onclick="openShowDetail()">PLAY SERIES</button>
             </div>
         </section>
 
-        <section id="detailSection" class="page-section">
-            <div class="hero">
-                <div class="hero-content">
-                    <h1 class="hero-title">HUNTER × HUNTER</h1>
-                    <p style="max-width: 600px; font-size: 1.4rem; text-shadow: 2px 2px 5px #000; margin-top: 20px;">
-                        Gon Freecss aspires to become a Hunter, an exceptional being capable of greatness. With his friends, he seeks his long-lost father.
-                    </p>
-                    <div style="margin-top: 30px;">
-                        <button class="btn-action" onclick="playEpisode(0)">▶ Play S1:E1</button>
-                    </div>
-                </div>
+        <div class="content-row">
+            <h3 class="row-header">Trending Now</h3>
+            <div class="show-card" onclick="openShowDetail()">
+                <img src="https://images.alphacoders.com/116/1163408.jpg">
             </div>
-            <div style="padding: 40px 60px;">
-                <h3 style="border-bottom: 2px solid var(--netflix-red); display: inline-block; padding-bottom: 10px;">Episodes</h3>
-                <div id="epList" style="margin-top: 20px;"></div>
-            </div>
-        </section>
+        </div>
     </div>
 
-    <div id="videoOverlay">
-        <span class="close-vid" onclick="closePlayer()">✕</span>
-        <video id="mainVideo"></video>
-        <div class="controls-wrapper">
-            <div class="progress-bar" onclick="seek(event)">
-                <div id="progressFill" class="progress-fill"></div>
-            </div>
-            <div style="display:flex; justify-content: space-between; align-items:center;">
-                <h2 id="vidTitle" style="margin:0; font-weight: normal;">Episode</h2>
+    <div id="detailModal" class="modal-fullscreen">
+        <div class="modal-container">
+            <div class="modal-banner">
+                <div onclick="toggleUI('detailModal')" style="position:absolute; top:30px; right:40px; font-size:2rem; cursor:pointer;">×</div>
                 <div>
-                    <button id="skipIntro" class="skip-btn" onclick="skipTo(120)">SKIP INTRO</button>
-                    <button class="skip-btn show" style="margin-left:10px; background: white; color: black;" onclick="nextEp()">NEXT EPISODE</button>
+                    <h1 style="font-family:'Bebas Neue'; font-size:5rem;">EPISODES</h1>
+                    <p style="color:var(--text-dim);">Season 1: The Hunter Exam</p>
+                </div>
+            </div>
+            <div class="ep-list" id="epListTarget"></div>
+        </div>
+    </div>
+
+    <div id="ddPopup" class="overlay">
+        <div class="card-popup dd-white">
+            <div class="dd-header">
+                <i class="fas fa-utensils" style="font-size:2rem;"></i>
+                <h2 style="font-family:'Bebas Neue'; margin-top:10px;">DashPass Concessions</h2>
+            </div>
+            <div class="dd-item" onclick="addSnack('Movie Popcorn Bucket')"><span>🍿 Large Popcorn</span> <span>$12.00</span></div>
+            <div class="dd-item" onclick="addSnack('Fountain Soda')"><span>🥤 Fountain Soda</span> <span>$5.50</span></div>
+            <div class="dd-item" onclick="addSnack('Milk Duds')"><span>🍬 Milk Duds</span> <span>$4.00</span></div>
+            <div id="cartStatus" style="padding:20px; color:#888; font-size:0.8rem;">Your cart is empty</div>
+            <button class="btn" style="width:100%; background:var(--dd-brand); color:#fff;" onclick="secureDoorDashHandoff()">CHECKOUT ON DOORDASH</button>
+            <p onclick="toggleUI('ddPopup')" style="margin-top:15px; color:#aaa; cursor:pointer; font-size:0.8rem;">Cancel Order</p>
+        </div>
+    </div>
+
+    <div id="partyPopup" class="overlay">
+        <div class="card-popup">
+            <h2 style="font-family:'Bebas Neue'; font-size:2.5rem;">WATCH PARTY</h2>
+            <div style="margin-top:30px;">
+                <button class="btn btn-accent" style="width:100%;" onclick="sessionAction('create')">CREATE NEW ROOM</button>
+                <div style="margin:20px 0; color:#444;">— OR —</div>
+                <input type="text" id="roomCodeIn" class="input-dark" placeholder="ENTER 6-DIGIT CODE">
+                <button class="btn" style="width:100%; background:var(--surface-light); color:#fff;" onclick="sessionAction('join')">JOIN PRIVATE SQUAD</button>
+            </div>
+            <p onclick="toggleUI('partyPopup')" style="margin-top:20px; color:#555; cursor:pointer;">Close Hub</p>
+        </div>
+    </div>
+
+    <div id="theater">
+        <div id="tLayout" class="theater-solo">
+            <div class="video-wrapper">
+                <div onclick="exitCinema()" style="position:absolute; top:30px; left:30px; z-index:100; cursor:pointer; background:rgba(0,0,0,0.6); padding:10px 20px; border-radius:4px; font-weight:900;">EXIT</div>
+                <video id="player" controls></video>
+                <div class="presence-bar" id="roomPresence">
+                    </div>
+            </div>
+            
+            <div id="sidebar" class="chat-sidebar" style="display:none;">
+                <div class="sidebar-tabs">
+                    <div class="tab-btn active" id="chatTab" onclick="switchSidebarTab('chat')">CHAT</div>
+                    <div class="tab-btn" id="syncTab" onclick="switchSidebarTab('sync')">SQUAD SYNC</div>
+                </div>
+
+                <div id="chatPanel" class="squad-panel active">
+                    <div class="chat-header">
+                        <div>
+                            <p style="font-size:0.6rem; color:#666;">ROOM STATUS</p>
+                            <b id="activeCodeDisplay" style="color:var(--accent);">SOLO</b>
+                        </div>
+                        <div style="text-align:right;">
+                            <p style="font-size:0.6rem; color:#666;">SQUAD SIZE</p>
+                            <b id="activeCount">1/10</b>
+                        </div>
+                    </div>
+                    <div class="chat-msgs" id="chatBox"></div>
+                    <div style="padding:20px; border-top:1px solid #222;">
+                        <input type="text" id="chatInput" placeholder="Send a message..." style="width:100%; padding:12px; background:#000; border:1px solid #333; color:#fff; border-radius:4px;" onkeypress="if(event.key==='Enter') sendChat()">
+                    </div>
+                </div>
+
+                <div id="syncPanel" class="squad-panel">
+                    <button class="btn btn-accent" style="width:100%; font-size:0.7rem; margin-bottom:20px;" onclick="manualAddFriend()">+ ADD PERSON TO SQUAD</button>
+                    
+                    <h4 style="font-size:0.7rem; color:var(--accent); margin-bottom:15px; letter-spacing:1px;">MASTER CONTROL</h4>
+                    <div id="globalEpList"></div>
+                    
+                    <h4 style="font-size:0.7rem; color:var(--accent); margin:20px 0 10px; letter-spacing:1px;">SWITCH ANIME</h4>
+                    <div class="sync-item" onclick="sysMsg('SQUAD SYNC: Switched to Jujutsu Kaisen')">
+                        <img src="https://wallpapercave.com/wp/wp8213608.jpg" style="width:40px; height:25px; object-fit:cover;">
+                        <span>Jujutsu Kaisen</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const episodes = [
-            { title: "Departure x And x Friends", file: "ep1.mp4" },
-            { title: "Test x of x Tests", file: "ep2.mp4" }
+        // --- DATA ---
+        const EPISODES = [
+            { id: 1, title: "Departure x And x Friends", duration: "24m" },
+            { id: 2, title: "Test x of x Tests", duration: "24m" },
+            { id: 3, title: "Rivals x for x Survival", duration: "23m" },
+            { id: 4, title: "Hope x and x Ambition", duration: "24m" },
+            { id: 5, title: "Hisoka x is x Sneaky", duration: "24m" }
         ];
-        
-        const video = document.getElementById('mainVideo');
-        const sliderWrapper = document.getElementById('sliderWrapper');
-        
-        // Slider Logic
-        let currentSlide = 0;
-        const totalSlides = 2;
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            sliderWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-        }, 5000);
 
-        function toggleGenres() { 
-            document.getElementById('genreSubmenu').classList.toggle('active'); 
+        let roomRegistry = ["ADMIN-2026"];
+        let cart = [];
+        let currentActiveRoom = null;
+        let squadNames = ["YOU"]; // Local registry of real people
+
+        // --- CORE UI ---
+        function toggleUI(id) {
+            const el = document.getElementById(id);
+            const isVisible = el.style.display === 'flex' || el.style.display === 'block';
+            el.style.display = isVisible ? 'none' : (id === 'detailModal' ? 'block' : 'flex');
         }
 
-        function showSection(id) {
-            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-section'));
-            document.getElementById(id).classList.add('active-section');
-            window.scrollTo({top: 0, behavior: 'smooth'});
+        function switchSidebarTab(tab) {
+            document.getElementById('chatTab').classList.toggle('active', tab === 'chat');
+            document.getElementById('syncTab').classList.toggle('active', tab === 'sync');
+            document.getElementById('chatPanel').classList.toggle('active', tab === 'chat');
+            document.getElementById('syncPanel').classList.toggle('active', tab === 'sync');
         }
 
-        function playEpisode(index) {
-            video.src = episodes[index].file;
-            document.getElementById('vidTitle').innerText = `S1:E${index + 1} - ${episodes[index].title}`;
-            document.getElementById('videoOverlay').style.display = 'block';
-            video.play();
+        function openShowDetail() {
+            toggleUI('detailModal');
+            document.getElementById('epListTarget').innerHTML = EPISODES.map(ep => `
+                <div class="ep-row" onclick="launchTheater(${ep.id}, false)">
+                    <div class="ep-num">${ep.id}</div>
+                    <div class="ep-thumb"><img src="https://images.alphacoders.com/116/1163408.jpg"></div>
+                    <div>
+                        <div style="font-weight:900; margin-bottom:5px;">${ep.title}</div>
+                        <p style="font-size:0.8rem; color:#666;">Episode ${ep.id} • ${ep.duration}</p>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function closePlayer() { 
-            video.pause(); 
-            document.getElementById('videoOverlay').style.display = 'none'; 
-        }
-        
-        function skipTo(time) { video.currentTime = time; }
-        
-        video.ontimeupdate = () => {
-            if (video.duration) {
-                const percentage = (video.currentTime / video.duration) * 100;
-                document.getElementById('progressFill').style.width = percentage + '%';
+        // --- SQUAD MANAGEMENT ---
+        function manualAddFriend() {
+            const name = prompt("Enter the name of the friend joining your screen:");
+            if (name && name.trim().length > 0) {
+                squadNames.push(name.trim().toUpperCase());
+                updateSquadPresence();
+                sysMsg(`${name.toUpperCase()} joined the squad.`);
             }
-            if(video.currentTime > 5 && video.currentTime < 115) {
-                document.getElementById('skipIntro').classList.add('show');
+        }
+
+        function updateSquadPresence() {
+            const count = squadNames.length;
+            document.getElementById('activeCount').innerText = `${count}/10`;
+            
+            const presence = document.getElementById('roomPresence');
+            presence.innerHTML = squadNames.map((name, index) => `
+                <div class="user-avatar" style="background:${index === 0 ? 'var(--accent)' : '#333'}">
+                    ${name.substring(0, 2)}
+                </div>
+            `).join('');
+        }
+
+        // --- SESSION LOGIC ---
+        function sessionAction(type) {
+            if (type === 'create') {
+                currentActiveRoom = "ROOM-" + Math.floor(1000 + Math.random() * 9000);
+                roomRegistry.push(currentActiveRoom);
+                launchTheater(1, true);
             } else {
-                document.getElementById('skipIntro').classList.remove('show');
+                const input = document.getElementById('roomCodeIn').value.trim().toUpperCase();
+                if (roomRegistry.includes(input)) {
+                    currentActiveRoom = input;
+                    launchTheater(1, true);
+                } else {
+                    alert("INVALID CODE");
+                }
             }
-        };
-
-        function seek(e) {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const pos = (e.clientX - rect.left) / rect.width;
-            video.currentTime = pos * video.duration;
+            toggleUI('partyPopup');
         }
 
-        const list = document.getElementById('epList');
-        episodes.forEach((ep, i) => {
-            list.innerHTML += `
-                <div style="padding:20px; background:#181818; margin-bottom:10px; cursor:pointer; display:flex; align-items:center; border-radius:4px; transition: 0.2s;" 
-                     onclick="playEpisode(${i})" 
-                     onmouseover="this.style.background='#222'" 
-                     onmouseout="this.style.background='#181818'">
-                    <span style="color:var(--netflix-red); font-weight:bold; margin-right:20px;">${i+1}</span>
-                    <span>${ep.title}</span>
-                </div>`;
+        // --- THEATER ENGINE ---
+        function launchTheater(epId, isParty) {
+            if(document.getElementById('detailModal').style.display === 'block') toggleUI('detailModal');
+            
+            document.getElementById('theater').style.display = 'block';
+            document.getElementById('tLayout').className = isParty ? 'theater-party' : 'theater-solo';
+            document.getElementById('sidebar').style.display = isParty ? 'flex' : 'none';
+            document.getElementById('activeCodeDisplay').innerText = isParty ? currentActiveRoom : "SOLO";
+            
+            syncGlobalVideo(epId, isParty);
+            
+            if (isParty) {
+                document.getElementById('globalEpList').innerHTML = EPISODES.map(ep => `
+                    <div class="sync-item" onclick="syncGlobalVideo(${ep.id}, true)">
+                        <b>${ep.id}</b> <span>${ep.title}</span>
+                    </div>
+                `).join('');
+                updateSquadPresence();
+                sysMsg("SECURE SYNC TUNNEL ACTIVE");
+            }
+        }
+
+        function syncGlobalVideo(id, isParty) {
+            const player = document.getElementById('player');
+            player.src = `ep${id}.mp4`; 
+            player.play();
+            if(isParty) sysMsg(`Screen updated to Episode ${id}`);
+        }
+
+        // --- CHAT & UTILS ---
+        function sysMsg(text) {
+            const box = document.getElementById('chatBox');
+            box.innerHTML += `<div style="color:var(--accent); font-size:0.6rem; text-align:center; margin-bottom:10px; font-weight:900;">[ ${text} ]</div>`;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function sendChat() {
+            const input = document.getElementById('chatInput');
+            if (!input.value) return;
+            document.getElementById('chatBox').innerHTML += `<div class="msg-line"><b>YOU</b>${input.value}</div>`;
+            input.value = "";
+            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+        }
+
+        function exitCinema() {
+            document.getElementById('player').pause();
+            document.getElementById('theater').style.display = 'none';
+        }
+
+        function addSnack(name) {
+            cart.push(name);
+            document.getElementById('cartStatus').innerText = "Selected: " + cart.join(", ");
+        }
+
+        function secureDoorDashHandoff() {
+            if (cart.length === 0) return;
+            window.open(`https://www.doordash.com/search/${encodeURIComponent(cart.join(" "))}`, '_blank');
+            cart = [];
+            document.getElementById('cartStatus').innerText = "Your cart is empty";
+            toggleUI('ddPopup');
+        }
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('mainNav');
+            window.scrollY > 100 ? nav.classList.add('scrolled') : nav.classList.remove('scrolled');
         });
     </script>
 </body>
