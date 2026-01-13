@@ -3,191 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StreamZ OS | Beyond Streaming</title>
-    
+    <title>StreamZ OS | Retro Cartridge Edition</title>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Bebas+Neue&family=Space+Mono&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
-        :root {
-            --accent: #e50914;
-            --bg: #030303;
-            --glass-border: rgba(255, 255, 255, 0.1);
+        :root { 
+            --accent: #e50914; 
+            --console-grey: #3a3a40;
+            --anime-bg: url('https://wallpaperaccess.com/full/266209.jpg'); 
         }
-
+        
         [x-cloak] { display: none !important; }
-        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; }
-
-        /* UI ELEMENTS */
-        .glass { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(40px); border: 1px solid var(--glass-border); }
-        .ios-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
-        .ios-btn:active { transform: scale(0.92); opacity: 0.7; }
-
-        /* VHS CHASSIS */
-        .vhs-chassis { 
-            position: relative; overflow: hidden; 
-            border: 16px solid #1a1a1a; border-radius: 40px; 
-            box-shadow: inset 0 0 50px #000, 0 20px 50px rgba(0,0,0,0.8);
+        
+        body { 
+            background: #0a0a0c; 
+            color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            overflow: hidden; 
+            height: 100vh;
+            position: relative;
         }
-        .vhs-overlay {
-            position: absolute; inset: 0; pointer-events: none; z-index: 20;
+
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: var(--anime-bg);
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            filter: grayscale(0.5) contrast(1.2);
+            z-index: -1;
+        }
+
+        .crt-effect::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
                         linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 100;
             background-size: 100% 3px, 3px 100%;
-        }
-        .scanline {
-            width: 100%; height: 2px; position: absolute; top: 0; z-index: 21;
-            background: rgba(255, 255, 255, 0.1);
-            animation: moveScan 8s linear infinite;
-        }
-        @keyframes moveScan { from { top: 0; } to { top: 100%; } }
-
-        /* DYNAMIC ISLAND */
-        .dynamic-island { animation: islandBounce 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes islandBounce { 
-            0% { transform: translate(-50%, -100%) scale(0.5); opacity: 0; }
-            100% { transform: translate(-50%, 20px) scale(1); opacity: 1; }
+            pointer-events: none;
         }
 
-        /* CUSTOM SCROLLBAR */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .cartridge-slot {
+            background: #151518;
+            border-bottom: 8px solid #000;
+            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.8);
+        }
+
+        .cartridge-item {
+            height: 440px;
+            background: var(--console-grey);
+            border-radius: 12px 12px 4px 4px;
+            position: relative;
+            padding: 16px;
+            box-shadow: inset 2px 2px 0 rgba(255,255,255,0.15), inset -3px -3px 0 rgba(0,0,0,0.5), 0 15px 30px rgba(0,0,0,0.6);
+            border: 2px solid #222;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .cartridge-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 14px;
+            background: #2a2a2e;
+            border-radius: 0 0 10px 10px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        .cartridge-item:hover {
+            transform: translateY(-15px) rotate(1deg);
+            border-color: var(--accent);
+            box-shadow: 0 25px 40px rgba(229, 9, 20, 0.3);
+        }
+
+        .cartridge-label-area {
+            height: 100%;
+            background: #111;
+            border: 3px solid #000;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .cart-art {
+            height: 65%;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            border-bottom: 5px solid var(--accent);
+        }
+
+        .nav-cart {
+            width: 110px;
+            height: 140px;
+            background: #444;
+            border-radius: 8px 8px 2px 2px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid #222;
+            transform: translateY(40px);
+        }
+
+        .nav-cart.active {
+            transform: translateY(15px);
+            background: var(--accent);
+            border-color: #ff4d4d;
+        }
+
+        .vhs-chassis { 
+            position: relative; 
+            border: 15px solid #1a1a1e;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.9);
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .retro-scroll::-webkit-scrollbar { width: 8px; }
+        .retro-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .retro-scroll::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+
+        .pixel-font { font-family: 'Press Start 2P', cursive; font-size: 10px; }
+        .mono-font { font-family: 'Space Mono', monospace; }
+        
+        .timeline-step {
+            border: 2px solid #333;
+            padding: 6px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .timeline-step.active {
+            border-color: var(--accent);
+            background: rgba(229, 9, 20, 0.2);
+        }
+
+        /* Manga Page Effect */
+        .manual-page {
+            background: #e1e1e1;
+            color: #1a1a1a;
+            box-shadow: 10px 10px 0 rgba(0,0,0,0.5);
+            border: 2px solid #fff;
+        }
     </style>
 </head>
-<body x-data="StreamZOS()" x-init="bootSystem()">
 
-    <div x-show="island.active" x-cloak class="fixed top-0 left-1/2 -translate-x-1/2 z-[9999] w-[340px] p-4 glass rounded-[30px] dynamic-island flex items-center gap-4 shadow-2xl">
-        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-white/5" x-text="island.icon"></div>
+<body x-data="StreamZOS()" x-init="bootSystem()" class="crt-effect">
+
+    <div class="bg-overlay"></div>
+
+    <div x-show="island.active" x-transition 
+         class="fixed top-6 left-1/2 -translate-x-1/2 z-[10000] w-[400px] p-4 bg-[#1a1a1e] border-4 border-[#333] rounded-2xl flex items-center gap-4 shadow-2xl">
+        <div class="w-12 h-12 bg-red-600 rounded flex items-center justify-center text-xl shadow-inner" x-text="island.icon"></div>
         <div class="flex-1">
-            <p class="text-[9px] font-black text-red-500 uppercase tracking-widest" x-text="island.title"></p>
-            <p class="text-xs text-white/80 font-medium" x-text="island.msg"></p>
+            <p class="pixel-font text-red-500 mb-1" x-text="island.title"></p>
+            <p class="text-[10px] text-white/70 uppercase font-black" x-text="island.msg"></p>
         </div>
     </div>
 
-    <div x-show="parentGate.locked" x-cloak class="fixed inset-0 z-[10000] bg-black/98 backdrop-blur-3xl flex items-center justify-center p-6 text-center">
-        <div class="max-w-md">
-            <div class="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-user-shield text-3xl text-red-600"></i>
-            </div>
-            <h2 class="text-4xl font-black mb-2 uppercase italic tracking-tighter">System Locked</h2>
-            <p class="text-zinc-500 text-sm mb-8">This content is restricted. Enter Parental PIN to proceed.</p>
-            <div class="flex justify-center gap-3 mb-8">
-                <template x-for="i in 4">
-                    <div class="w-12 h-16 glass rounded-2xl flex items-center justify-center text-2xl font-bold" 
-                         :class="pinInput.length >= i ? 'border-red-600 text-red-600' : 'text-white/20'">*</div>
-                </template>
-            </div>
-            <div class="grid grid-cols-3 gap-3 max-w-[280px] mx-auto">
-                <template x-for="num in [1,2,3,4,5,6,7,8,9,0]">
-                    <button @click="enterPin(num)" class="ios-btn glass h-14 rounded-2xl font-bold hover:bg-white/10" x-text="num"></button>
-                </template>
-                <button @click="pinInput = ''" class="ios-btn glass h-14 rounded-2xl text-[10px] font-bold text-red-500 uppercase">Clear</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="flex h-screen w-screen overflow-hidden">
+    <div class="flex flex-col h-screen w-screen overflow-hidden relative z-10">
         
-        <aside class="w-20 xl:w-72 glass border-r border-white/5 flex flex-col z-50">
-            <div class="p-10">
-                <h1 class="text-3xl font-black italic tracking-tighter uppercase leading-none">Stream<span class="text-red-600">Z</span></h1>
-                <p class="text-[8px] font-bold text-zinc-600 uppercase tracking-[4px] mt-1">Operating System</p>
+        <header class="cartridge-slot h-44 flex items-end justify-center gap-6 px-12 pb-0 z-50">
+            <template x-for="nav in menu">
+                <div @click="view = nav.id; uiFeedback('insert')" 
+                     class="nav-cart flex flex-col items-center justify-center gap-2" 
+                     :class="view === nav.id ? 'active' : ''">
+                    <span class="text-2xl" x-text="nav.icon"></span>
+                    <span class="pixel-font text-[7px] text-center px-1" x-text="nav.label"></span>
+                </div>
+            </template>
+        </header>
+
+        <main class="flex-1 flex flex-col relative overflow-hidden">
+            <div class="h-10 bg-black/80 backdrop-blur-md flex items-center justify-between px-12 border-b border-white/5">
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></div>
+                        <span class="pixel-font text-zinc-500 uppercase">System Active</span>
+                    </div>
+                    <span class="mono-font text-[10px] text-zinc-600">ID: <span x-text="sessionID"></span></span>
+                </div>
+                <div class="flex items-center gap-6">
+                    <input type="text" x-model="search" placeholder="SEARCH_DB..." 
+                           class="bg-zinc-900 border border-zinc-800 rounded px-3 py-1 mono-font text-[10px] text-red-500 outline-none w-48 focus:border-red-600">
+                    <span class="pixel-font text-zinc-500" x-text="currentTime"></span>
+                </div>
             </div>
 
-            <nav class="flex-1 px-6 space-y-2">
-                <template x-for="nav in menu">
-                    <button @click="view = nav.id; zap()" 
-                            :class="view === nav.id ? 'bg-red-600 text-white' : 'text-zinc-500 hover:text-white'"
-                            class="ios-btn w-full flex items-center gap-4 p-4 rounded-[20px] font-black text-xs uppercase tracking-widest">
-                        <span x-text="nav.icon" class="text-lg"></span>
-                        <span x-text="nav.label" class="hidden xl:block"></span>
-                    </button>
-                </template>
-            </nav>
-
-            <div class="p-6 m-6 rounded-[25px] bg-red-600/10 border border-red-600/20">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-[10px] font-black text-red-600">CONCESSIONS</span>
-                    <i class="fas fa-shopping-cart text-[10px] text-red-600"></i>
-                </div>
-                <button @click="triggerIsland('🍔', 'DOORDASH', 'Ordering Movie Snacks...')" class="ios-btn w-full py-3 bg-red-600 text-white text-[10px] font-black rounded-xl uppercase tracking-tighter">Order DashPass</button>
-            </div>
-        </aside>
-
-        <main class="flex-1 flex flex-col relative">
-            
-            <header class="h-20 border-b border-white/5 flex items-center justify-between px-10 glass">
-                <div class="flex items-center gap-4">
-                    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <span class="text-[10px] font-bold uppercase text-zinc-500 tracking-widest">Live Sync: Active Room <span class="text-white" x-text="roomCode"></span></span>
-                </div>
-                <div class="flex gap-2">
-                    <button @click="view = 'parents'" class="ios-btn w-10 h-10 glass rounded-full flex items-center justify-center text-xs"><i class="fas fa-cog"></i></button>
-                    <div class="h-10 px-4 glass rounded-full flex items-center gap-3">
-                        <div class="w-6 h-6 rounded-full bg-red-600"></div>
-                        <span class="text-[10px] font-black uppercase">Luffy_2026</span>
+            <div class="flex-1 p-8 overflow-y-auto retro-scroll">
+                
+                <div x-show="view === 'shows'" x-cloak class="max-w-[1400px] mx-auto">
+                    <div class="flex items-center justify-between mb-10">
+                        <h2 class="pixel-font text-2xl text-zinc-400">Memory <span class="text-red-600">Bank</span></h2>
+                        <div class="px-4 py-2 bg-zinc-900 border border-zinc-700 rounded pixel-font text-[8px]" 
+                             x-text="'Matches: ' + filteredCatalog.length"></div>
                     </div>
-                </div>
-            </header>
-
-            <div class="flex-1 p-10 overflow-y-auto">
-                <div x-show="view === 'theater'" x-cloak class="max-w-6xl mx-auto">
-                    <div class="vhs-chassis aspect-video mb-10">
-                        <div class="scanline"></div>
-                        <div class="vhs-overlay"></div>
-                        <div class="absolute inset-0 bg-[#050505] flex items-center justify-center">
-                            <div class="text-center">
-                                <p class="font-mono text-zinc-700 text-sm tracking-widest uppercase mb-2">Signal Status: 0x442</p>
-                                <p class="text-4xl font-black italic opacity-20 animate-pulse">TRANSMISSION PAUSED</p>
-                            </div>
-                        </div>
-                        <div class="absolute bottom-10 left-10 right-10 flex items-center justify-between z-30">
-                            <div class="flex gap-4">
-                                <button @click="zap()" class="ios-btn w-12 h-12 glass rounded-full flex items-center justify-center"><i class="fas fa-play"></i></button>
-                                <button @click="zap()" class="ios-btn w-12 h-12 glass rounded-full flex items-center justify-center"><i class="fas fa-step-forward"></i></button>
-                            </div>
-                            <div class="px-6 py-2 glass rounded-full text-[10px] font-black">CH 04: HUNTER X HUNTER</div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <template x-for="ep in episodes">
-                            <div @click="zap()" class="ios-btn glass p-4 rounded-3xl border-white/5 flex items-center gap-6 group hover:border-red-600/50 transition">
-                                <div class="w-32 aspect-video bg-zinc-900 rounded-xl overflow-hidden relative">
-                                    <div class="absolute inset-0 bg-red-600/20 opacity-0 group-hover:opacity-100 transition"></div>
-                                    <div class="absolute bottom-2 left-2 text-[10px] font-black" x-text="'EP ' + ep.id"></div>
-                                </div>
-                                <div>
-                                    <h4 class="font-black text-sm uppercase tracking-tighter" x-text="ep.title"></h4>
-                                    <p class="text-[10px] text-zinc-500 uppercase mt-1" x-text="ep.duration"></p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
+                        <template x-for="show in filteredCatalog">
+                            <div class="cartridge-item group" @click="loadShow(show)">
+                                <div class="cartridge-label-area">
+                                    <div class="cart-art" :style="'background-image: url(' + show.img + ')'">
+                                        <div class="absolute top-3 right-3 px-2 py-1 bg-black/80 rounded pixel-font text-[6px] text-red-500" x-text="show.status"></div>
+                                    </div>
+                                    <div class="p-4 bg-[#1a1a1e] flex-1 flex flex-col justify-between">
+                                        <div>
+                                            <h3 class="text-xl font-black uppercase italic leading-tight text-white group-hover:text-red-500 transition" x-text="show.title"></h3>
+                                            <p class="mono-font text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-1" x-text="show.genre"></p>
+                                        </div>
+                                        <div class="flex justify-between items-end border-t border-white/5 pt-4">
+                                            <div class="flex gap-1.5">
+                                                <div class="w-1 h-4 bg-zinc-800 rounded-full"></div>
+                                                <div class="w-1 h-4 bg-zinc-800 rounded-full"></div>
+                                            </div>
+                                            <span class="pixel-font text-[6px] text-zinc-700">OS-VER.2026</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </template>
                     </div>
                 </div>
 
-                <div x-show="view === 'parents'" x-cloak class="max-w-3xl mx-auto glass p-10 rounded-[40px]">
-                    <h2 class="text-3xl font-black uppercase italic mb-8">Guardian Settings</h2>
-                    <div class="space-y-6">
-                        <div class="flex items-center justify-between p-6 glass rounded-2xl">
-                            <div>
-                                <p class="text-sm font-bold">Restrict Mature Content</p>
-                                <p class="text-[10px] text-zinc-500 uppercase">Blocks Seinen and High-Intensity ratings</p>
+                <div x-show="view === 'theater'" x-cloak class="max-w-5xl mx-auto">
+                    <div class="grid grid-cols-5 lg:grid-cols-9 gap-2 mb-6" x-show="activeShow">
+                        <template x-for="(step, index) in activeShow?.sequence">
+                            <div @click="currentStep = index; loadVideo()" 
+                                 class="timeline-step cursor-pointer" 
+                                 :class="currentStep === index ? 'active' : ''">
+                                <p class="pixel-font text-[5px] mb-1 text-zinc-500" x-text="step.type"></p>
+                                <p class="mono-font text-[8px] font-bold truncate" x-text="step.label"></p>
                             </div>
-                            <button @click="settings.restrict = !settings.restrict" 
-                                    :class="settings.restrict ? 'bg-red-600' : 'bg-zinc-800'"
-                                    class="w-14 h-8 rounded-full relative transition">
-                                <div :class="settings.restrict ? 'translate-x-7' : 'translate-x-1'" class="absolute top-1 w-6 h-6 bg-white rounded-full transition"></div>
-                            </button>
+                        </template>
+                    </div>
+
+                    <div class="vhs-chassis aspect-video group">
+                        <div class="absolute inset-0 z-20 bg-black" x-show="activeShow">
+                            <video id="mainPlayer" class="w-full h-full" controls oncontextmenu="return false;">
+                                <source :src="activeShow?.sequence[currentStep].file" type="video/mp4">
+                            </video>
                         </div>
-                        <div class="p-6 glass rounded-2xl">
-                            <p class="text-sm font-bold mb-4">Master Sync PIN</p>
-                            <input type="password" value="****" class="bg-black/40 border border-white/10 w-full p-4 rounded-xl text-zinc-500" readonly>
+
+                        <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#050505] z-10" x-show="!activeShow">
+                            <div class="text-center">
+                                <p class="pixel-font text-zinc-800 mb-4 animate-pulse">Insert Cartridge to Begin...</p>
+                                <h2 class="text-6xl font-black italic uppercase text-white/5 tracking-tighter">No Signal</h2>
+                            </div>
+                        </div>
+
+                        <div x-show="activeShow" class="absolute inset-0 z-30 opacity-0 group-hover:opacity-100 transition-all p-10 flex flex-col justify-end bg-gradient-to-t from-black pointer-events-none">
+                            <div class="flex justify-between items-center pointer-events-auto">
+                                <span class="pixel-font text-red-500 text-[8px]" x-text="'LOADED: ' + activeShow.sequence[currentStep].label"></span>
+                                <div class="flex gap-4">
+                                    <button @click="nextStep()" class="bg-white text-black px-4 py-2 pixel-font text-[8px] hover:bg-red-600 hover:text-white transition">FAST_FWD >></button>
+                                    <button @click="activeShow = null; view = 'shows'" class="text-2xl text-zinc-500 hover:text-red-500"><i class="fas fa-eject"></i></button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div x-show="view === 'manga'" x-cloak class="max-w-4xl mx-auto">
+                    <div class="manual-page p-12 rounded-sm min-h-[600px] relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 bg-red-600 text-white pixel-font text-[8px] rotate-45 translate-x-10 -translate-y-2 w-40 text-center">FOR USERS ONLY</div>
+                        
+                        <h1 class="text-4xl font-black italic uppercase border-b-8 border-black pb-4 mb-8">System Manual <span class="text-red-600">v.01</span></h1>
+                        
+                        <div class="grid grid-cols-2 gap-12 text-black">
+                            <div>
+                                <h3 class="pixel-font text-[10px] mb-4 bg-black text-white p-2 inline-block">CONTROLS</h3>
+                                <ul class="space-y-4 mono-font font-bold text-sm">
+                                    <li class="flex justify-between border-b border-black/10 pb-1"><span>INSERT:</span> <span>CLICK CART</span></li>
+                                    <li class="flex justify-between border-b border-black/10 pb-1"><span>EJECT:</span> <span>TV ICON</span></li>
+                                    <li class="flex justify-between border-b border-black/10 pb-1"><span>COMMS:</span> <span>SAT ICON</span></li>
+                                </ul>
+
+                                <div class="mt-8 p-4 border-4 border-black bg-white/50">
+                                    <p class="pixel-font text-[8px] leading-relaxed">WARNING: Do not blow into the cartridges. Use a dry microfiber cloth if neural link is unstable.</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <h3 class="pixel-font text-[10px] mb-4 bg-black text-white p-2 inline-block">HXH SYNOPSIS</h3>
+                                <p class="mono-font text-xs leading-relaxed italic">
+                                    "Gon Freecss aspires to become a Hunter, an exceptional being capable of greatness. With his friends and his potential, he seeks for his father who left him when he was young."
+                                </p>
+                                <div class="w-full h-40 bg-black/10 border-2 border-dashed border-black/30 flex items-center justify-center">
+                                    <span class="pixel-font text-black/20">IMAGE_PLACEHOLDER</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div x-show="view === 'social'" x-cloak class="max-w-4xl mx-auto">
+                    <div class="bg-black/80 border-4 border-zinc-800 rounded-3xl p-8 h-[500px] flex flex-col shadow-2xl">
+                        <div class="flex-1 overflow-y-auto space-y-4 retro-scroll pr-4">
+                            <template x-for="msg in chats.discord">
+                                <div class="flex gap-4 items-start">
+                                    <div class="w-10 h-10 bg-red-900/20 border border-red-900 rounded flex items-center justify-center pixel-font text-red-600 text-[8px]">RX</div>
+                                    <div class="flex-1 p-4 bg-[#1a1a1e] border-l-4 border-red-600">
+                                        <p class="pixel-font text-[8px] text-red-500 mb-1" x-text="msg.user"></p>
+                                        <p class="mono-font text-xs text-zinc-300" x-text="msg.text"></p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="mt-6 bg-black p-2 border border-zinc-800 rounded-lg flex items-center">
+                            <input type="text" placeholder="ENCODE MESSAGE..." class="bg-transparent flex-1 px-4 font-bold text-xs uppercase mono-font text-red-500 outline-none">
+                            <button class="bg-red-600 px-6 py-2 rounded pixel-font text-[8px] hover:bg-red-500">SEND</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -195,100 +334,124 @@
     <script>
         function StreamZOS() {
             return {
-                view: 'theater',
-                roomCode: 'SQUAD-' + Math.floor(Math.random() * 9999),
-                pinInput: '',
-                masterPin: '2026',
-                parentGate: { locked: false },
+                view: 'shows',
+                search: '',
+                sessionID: 'SN-' + Math.floor(Math.random() * 99999),
+                currentTime: '00:00',
                 island: { active: false, icon: '', title: '', msg: '' },
-                settings: { restrict: true },
+                activeShow: null,
+                currentStep: 0,
+
                 menu: [
-                    { id: 'theater', label: 'Theater Room', icon: '📽️' },
-                    { id: 'social', label: 'Squad Feed', icon: '📡' },
-                    { id: 'parents', label: 'Guardian', icon: '🛡️' }
+                    { id: 'shows', label: 'Library', icon: '📁' },
+                    { id: 'theater', label: 'Display', icon: '📺' },
+                    { id: 'social', label: 'Comms', icon: '🛰️' },
+                    { id: 'manga', label: 'Manual', icon: '📖' }
                 ],
-                episodes: [
-                    { id: 1, title: 'Departure x And x Friends', duration: '23:45' },
-                    { id: 2, title: 'Test x of x Tests', duration: '23:50' },
-                    { id: 3, title: 'Rivals x for x Survival', duration: '23:10' },
-                    { id: 4, title: 'Hope x and x Ambition', duration: '24:00' }
+
+                catalog: [
+                    { 
+                        title: 'Hunter x Hunter', 
+                        genre: 'Shonen / Action', 
+                        status: 'COMPLETE', 
+                        img: 'https://images.alphacoders.com/116/1163408.jpg',
+                        sequence: [
+                            { type: 'ARC_01', label: 'Hunter Exam Arc', file: 'hxh_arc1.mp4' }, 
+                            { type: 'ARC_02', label: 'Zoldyck Family Arc', file: 'hxh_arc2.mp4' },
+                            { type: 'ARC_03', label: 'Heavens Arena Arc', file: 'hxh_arc3.mp4' },
+                            { type: 'ARC_04', label: 'Yorknew City Arc', file: 'hxh_arc4.mp4' },
+                            { type: 'ARC_05', label: 'Greed Island Arc', file: 'hxh_arc5.mp4' },
+                            { type: 'ARC_06', label: 'Chimera Ant Arc', file: 'hxh_arc6.mp4' },
+                            { type: 'ARC_07', label: 'Election Arc', file: 'hxh_arc7.mp4' },
+                            { type: 'MOVIE', label: 'Phantom Rouge', file: 'movie_1.mp4' },
+                            { type: 'MOVIE', label: 'The Last Mission', file: 'movie_2.mp4' }
+                        ]
+                    },
+                    { 
+                        title: 'Solo Leveling', 
+                        genre: 'Fantasy', 
+                        status: 'LIVE', 
+                        img: 'https://images.alphacoders.com/133/1338573.png',
+                        sequence: [{ type: 'SERIES', label: 'Season 1', file: 'ep1.mp4' }]
+                    }
                 ],
-                audioCtx: null,
+
+                chats: {
+                    discord: [
+                        { user: 'SHINJI_99', text: 'System looks stable today.' },
+                        { user: 'REI_00', text: 'All Hunter x Hunter sectors mapped.' },
+                        { user: 'KILLUA_X', text: 'Found the Greed Island save file.' }
+                    ]
+                },
+
+                // Getters
+                get filteredCatalog() {
+                    return this.catalog.filter(item => 
+                        item.title.toLowerCase().includes(this.search.toLowerCase()) ||
+                        item.genre.toLowerCase().includes(this.search.toLowerCase())
+                    );
+                },
 
                 bootSystem() {
-                    this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    setTimeout(() => {
-                        this.triggerIsland('⚡', 'SYSTEM', 'StreamZ OS v2.0 Booted Successfully');
-                    }, 1000);
+                    this.updateTime();
+                    setInterval(() => this.updateTime(), 1000);
+                    setTimeout(() => this.triggerIsland('💾', 'BOOT_OK', 'Neural Link Established'), 1000);
+                },
+
+                updateTime() {
+                    const now = new Date();
+                    this.currentTime = now.getHours().toString().padStart(2, '0') + ':' + 
+                                     now.getMinutes().toString().padStart(2, '0');
+                },
+
+                loadShow(show) {
+                    this.activeShow = show;
+                    this.currentStep = 0;
+                    this.view = 'theater';
+                    this.triggerIsland('📽️', 'DECODING', show.title);
+                    this.uiFeedback('insert');
+                    this.loadVideo();
+                },
+
+                loadVideo() {
+                    this.$nextTick(() => {
+                        const player = document.getElementById('mainPlayer');
+                        if(player) {
+                            player.load();
+                            player.play();
+                        }
+                    });
+                },
+
+                nextStep() {
+                    if (this.currentStep < this.activeShow.sequence.length - 1) {
+                        this.currentStep++;
+                        this.triggerIsland('⏭️', 'NEXT_SECTOR', this.activeShow.sequence[this.currentStep].label);
+                        this.loadVideo();
+                    } else {
+                        this.triggerIsland('🏁', 'END_OF_TAPE', 'Sequence Complete');
+                    }
+                },
+
+                uiFeedback(type) {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(type === 'insert' ? 200 : 400, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.1);
                 },
 
                 triggerIsland(icon, title, msg) {
                     this.island = { active: true, icon, title, msg };
-                    setTimeout(() => this.island.active = false, 5000);
-                    this.playStatic();
-                },
-
-                enterPin(num) {
-                    if(this.pinInput.length < 4) {
-                        this.pinInput += num;
-                        this.zap(1200);
-                    }
-                    if(this.pinInput === this.masterPin) {
-                        this.parentGate.locked = false;
-                        this.pinInput = '';
-                        this.triggerIsland('🔓', 'SECURITY', 'System Unlocked');
-                    } else if (this.pinInput.length === 4) {
-                        this.pinInput = '';
-                        this.zap(200);
-                    }
-                },
-
-                zap(freq = 800) {
-                    const osc = this.audioCtx.createOscillator();
-                    const gain = this.audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.02, this.audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.1);
-                    osc.connect(gain);
-                    gain.connect(this.audioCtx.destination);
-                    osc.start();
-                    osc.stop(this.audioCtx.currentTime + 0.1);
-                },
-
-                playStatic() {
-                    const bufferSize = this.audioCtx.sampleRate * 0.5;
-                    const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
-                    const data = buffer.getChannelData(0);
-                    for(let i=0; i<bufferSize; i++) data[i] = Math.random() * 2 - 1;
-                    const noise = this.audioCtx.createBufferSource();
-                    noise.buffer = buffer;
-                    const gain = this.audioCtx.createGain();
-                    gain.gain.setValueAtTime(0.03, this.audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.5);
-                    noise.connect(gain);
-                    gain.connect(this.audioCtx.destination);
-                    noise.start();
+                    setTimeout(() => this.island.active = false, 3000);
                 }
             }
         }
     </script>
-
-    <script type="text/python-logic">
-        """
-        Conceptual Python Logic for StreamZ OS
-        Handling Content Metadata & Rating Security
-        """
-        def process_content_rating(show_id):
-            ratings = {
-                "hxh": {"rating": "PG-13", "locked": False},
-                "berserk": {"rating": "R", "locked": True}
-            }
-            return ratings.get(show_id)
-
-        def sync_theater_transmission(room_id, timestamp):
-            # Logic for forcing all client players to a specific frame
-            pass
-    </script>
 </body>
-</html>
+</html>s
